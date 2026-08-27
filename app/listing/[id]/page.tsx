@@ -3,8 +3,8 @@ import { Listing } from '@/lib/types'
 import { mockListings } from '@/lib/mock-listings'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ListingGallery from '@/components/ListingGallery'
 import { listingWhatsappLink } from '@/lib/whatsapp'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
 
 export default async function ListingPage({
@@ -33,24 +33,7 @@ export default async function ListingPage({
       <Header />
       <section className="max-w-[1100px] mx-auto px-7 py-14 grid md:grid-cols-2 gap-12">
         <div>
-          <div className="relative aspect-[4/3] bg-[var(--panel)] border border-[var(--line)] facet-card overflow-hidden mb-4">
-            {item.photos?.[0] ? (
-              <Image src={item.photos[0]} alt={item.title} fill className="object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center font-display text-[var(--ash-dim)]">
-                No photo yet
-              </div>
-            )}
-          </div>
-          {item.photos && item.photos.length > 1 && (
-            <div className="grid grid-cols-4 gap-3">
-              {item.photos.slice(1).map((photo, i) => (
-                <div key={i} className="relative aspect-square bg-[var(--panel)] border border-[var(--line)] overflow-hidden">
-                  <Image src={photo} alt={`${item.title} photo ${i + 2}`} fill className="object-cover" />
-                </div>
-              ))}
-            </div>
-          )}
+          <ListingGallery photos={item.photos ?? []} title={item.title} />
         </div>
 
         <div>
@@ -90,8 +73,8 @@ export default async function ListingPage({
             </div>
           )}
 
-          <a
-            href={listingWhatsappLink(item.title)}
+          
+            href={listingWhatsappLink(item)}
             target="_blank"
             rel="noopener noreferrer"
             className="gradient-bg text-white font-display font-semibold text-[15px] px-7 py-4 facet-btn inline-block"
