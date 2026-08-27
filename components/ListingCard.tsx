@@ -64,8 +64,8 @@ export default function ListingCard({ listing }: { listing: Listing }) {
               <span className="font-mono text-[10px] text-[var(--warn)] ml-1.5 align-middle">FIRM</span>
             )}
           </div>
-          <a
-            href={listingWhatsappLink(listing.title)}
+          
+            href={listingWhatsappLink(listing)}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 border border-[var(--magenta)] font-mono text-[11.5px] px-3 py-2 hover:bg-[var(--magenta)]/10 transition-colors"
