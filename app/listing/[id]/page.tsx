@@ -1,0 +1,106 @@
+import { createClient } from '@/lib/supabase/server'
+import { Listing } from '@/lib/types'
+import { mockListings } from '@/lib/mock-listings'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+import { listingWhatsappLink } from '@/lib/whatsapp'
+import Image from 'next/image'
+import { notFound } from 'next/navigation'
+
+export default async function ListingPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const supabase = await createClient()
+
+  let item: Listing | undefined
+
+  if (supabase) {
+    const { data } = await supabase.from('listings').select('*').eq('id', id).single()
+    if (!data) notFound()
+    item = data as Listing
+    // fire-and-forget lead log — doesn't block the page
+    supabase.from('leads').insert({ listing_id: item.id, source: 'page_view' }).then(() => {})
+  } else {
+    item = mockListings.find((l) => l.id === id)
+    if (!item) notFound()
+  }
+
+  return (
+    <>
+      <Header />
+      <section className="max-w-[1100px] mx-auto px-7 py-14 grid md:grid-cols-2 gap-12">
+        <div>
+          <div className="relative aspect-[4/3] bg-[var(--panel)] border border-[var(--line)] facet-card overflow-hidden mb-4">
+            {item.photos?.[0] ? (
+              <Image src={item.photos[0]} alt={item.title} fill className="object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center font-display text-[var(--ash-dim)]">
+                No photo yet
+              </div>
+            )}
+          </div>
+          {item.photos && item.photos.length > 1 && (
+            <div className="grid grid-cols-4 gap-3">
+              {item.photos.slice(1).map((photo, i) => (
+                <div key={i} className="relative aspect-square bg-[var(--panel)] border border-[var(--line)] overflow-hidden">
+                  <Image src={photo} alt={`${item.title} photo ${i + 2}`} fill className="object-cover" />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div>
+          <div className="font-mono text-xs text-[var(--ash-dim)] uppercase mb-2">
+            {item.category} {item.brand ? `· ${item.brand}` : ''}
+          </div>
+          <h1 className="font-display text-3xl font-bold mb-4">{item.title}</h1>
+
+          <div className="flex items-center gap-3 mb-6">
+            <span className="font-mono text-[11px] uppercase px-2.5 py-1 border border-[var(--signal)]/35 bg-[var(--signal)]/10 text-[var(--signal)]">
+              {item.condition}
+            </span>
+            {item.location && (
+              <span className="font-mono text-[11px] text-[var(--ash-dim)]">📍 {item.location}</span>
+            )}
+          </div>
+
+          <div className="font-display text-3xl font-bold mb-6">
+            <span className="font-mono text-sm text-[var(--ash-dim)] mr-1.5">{item.currency}</span>
+            {item.price.toLocaleString()}
+            {item.price_firm && <span className="font-mono text-xs text-[var(--warn)] ml-2 align-middle">FIRM</span>}
+          </div>
+
+          <div className="border-t border-[var(--line)] pt-6 mb-6">
+            <h3 className="font-mono text-[11px] text-[var(--ash-dim)] uppercase mb-3 tracking-wide">Specs</h3>
+            <div className="grid grid-cols-2 gap-y-2 gap-x-4 font-mono text-sm text-[var(--ash)]">
+              {item.specs.map((spec, i) => (
+                <div key={i}>{spec}</div>
+              ))}
+            </div>
+          </div>
+
+          {item.description && (
+            <div className="border-t border-[var(--line)] pt-6 mb-8">
+              <h3 className="font-mono text-[11px] text-[var(--ash-dim)] uppercase mb-3 tracking-wide">Details</h3>
+              <p className="text-[var(--ash)] text-sm leading-relaxed whitespace-pre-line">{item.description}</p>
+            </div>
+          )}
+
+          <a
+            href={listingWhatsappLink(item.title)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="gradient-bg text-white font-display font-semibold text-[15px] px-7 py-4 facet-btn inline-block"
+          >
+            Message on WhatsApp →
+          </a>
+        </div>
+      </section>
+      <Footer />
+    </>
+  )
+}
