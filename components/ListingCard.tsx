@@ -69,7 +69,6 @@ export default function ListingCard({ listing }: { listing: Listing }) {
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 border border-[var(--magenta)] font-mono text-[11.5px] px-3 py-2 hover:bg-[var(--magenta)]/10 transition-colors"
-            onClick={(e) => e.stopPropagation()}
           >
             WhatsApp →
           </a>
