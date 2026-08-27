@@ -9,24 +9,17 @@ Listing site for laptops, consoles, RAM and SSDs. Buyers browse and filter on-si
 1. Create a project at supabase.com.
 2. Go to **SQL Editor** → paste the contents of `supabase/schema.sql` → Run.
 3. Go to **Storage** → create a new bucket named `listing-photos` → make it **public**.
-4. Go to **Authentication → Users** → **Add user** → create your own admin login (email + password). This is what you'll use to sign in at `/admin`.
-5. Go to **Project Settings → API** → copy the **Project URL** and **anon public** key.
+4. Go to **SQL Editor** → paste the contents of `supabase/storage-policies.sql` → Run. (Marking a bucket "public" only allows reads — this adds the upload permission for your admin login.)
+5. Go to **Authentication → Users** → **Add user** → create your own admin login (email + password). This is what you'll use to sign in at `/admin`.
+6. Go to **Project Settings → API** → copy the **Project URL** and **anon public** key.
 
 ### 2. Local environment
 
-Copy `.env.example` to `.env.local` and fill in the two values from step 1.5:
-
-```
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-```
-
+Copy `.env.example` to `.env.local` and fill in the two values from step 1.6:
 ### 3. Run it
 
-```
 npm install
 npm run dev
-```
 
 Visit `http://localhost:3000` for the storefront, `http://localhost:3000/admin` to manage listings.
 
