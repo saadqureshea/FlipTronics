@@ -1,15 +1,13 @@
 import Link from 'next/link'
 import { whatsappLink } from '@/lib/whatsapp'
+import Logo from '@/components/Logo'
 
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-[var(--void)]/85 backdrop-blur-md border-b border-[var(--line)]">
       <div className="max-w-[1200px] mx-auto px-7 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
-          <div
-            className="w-[34px] h-[34px] gradient-bg"
-            style={{ clipPath: 'polygon(0 0, 60% 0, 100% 30%, 100% 100%, 40% 100%, 0 70%)' }}
-          />
+          <Logo className="w-[30px] h-[30px] shrink-0" />
           <span className="font-display font-bold text-[19px] tracking-wide">
             FLIP<span className="text-[var(--magenta)]">TRONICS</span>
           </span>

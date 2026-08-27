@@ -64,7 +64,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
               <span className="font-mono text-[10px] text-[var(--warn)] ml-1.5 align-middle">FIRM</span>
             )}
           </div>
-          
+          <a
             href={listingWhatsappLink(listing)}
             target="_blank"
             rel="noopener noreferrer"

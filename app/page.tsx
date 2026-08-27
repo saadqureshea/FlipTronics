@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import ListingCard from '@/components/ListingCard'
 import { whatsappLink } from '@/lib/whatsapp'
 import Link from 'next/link'
+import Logo from '@/components/Logo'
 
 const categories = [
   { label: 'All', value: '' },
@@ -88,7 +89,7 @@ export default async function Home({
                 'radial-gradient(circle at 30% 20%, rgba(109,31,201,0.35), transparent 55%), radial-gradient(circle at 75% 80%, rgba(240,20,176,0.3), transparent 55%)',
             }}
           />
-          <span className="font-display font-bold text-[180px] gradient-text relative opacity-90">F1</span>
+          <Logo className="w-[46%] h-[46%] relative drop-shadow-[0_0_60px_rgba(240,20,176,0.35)]" />
         </div>
       </section>
 
@@ -96,7 +97,7 @@ export default async function Home({
         <div className="flex justify-between items-end mb-6">
           <div>
             <h2 className="font-display text-2xl font-semibold">Current drop</h2>
-            <div className="font-mono text-xs text-[var(--ash-dim)] mt-1.5">// {items.length} pieces listed</div>
+            <div className="font-mono text-xs text-[var(--ash-dim)] mt-1.5">{'// '}{items.length} pieces listed</div>
           </div>
         </div>
 

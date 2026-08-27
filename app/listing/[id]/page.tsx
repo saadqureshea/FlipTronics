@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import ListingGallery from '@/components/ListingGallery'
 import { listingWhatsappLink } from '@/lib/whatsapp'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 
 export default async function ListingPage({
   params,
@@ -31,7 +32,15 @@ export default async function ListingPage({
   return (
     <>
       <Header />
-      <section className="max-w-[1100px] mx-auto px-7 py-14 grid md:grid-cols-2 gap-12">
+      <section className="max-w-[1100px] mx-auto px-7 pt-8">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 font-mono text-xs text-[var(--ash-dim)] hover:text-[var(--magenta)] transition-colors"
+        >
+          ← Back to listings
+        </Link>
+      </section>
+      <section className="max-w-[1100px] mx-auto px-7 pt-6 pb-14 grid md:grid-cols-2 gap-12">
         <div>
           <ListingGallery photos={item.photos ?? []} title={item.title} />
         </div>
@@ -73,7 +82,7 @@ export default async function ListingPage({
             </div>
           )}
 
-          
+          <a
             href={listingWhatsappLink(item)}
             target="_blank"
             rel="noopener noreferrer"
