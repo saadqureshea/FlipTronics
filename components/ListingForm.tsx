@@ -23,6 +23,29 @@ export default function ListingForm({ existing }: { existing?: Listing }) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
+  async function compressImage(file: File): Promise<File> {
+    // Skip compression for already-small files or non-standard image types
+    if (file.size < 300_000 || !/^image\/(jpeg|png|webp)$/.test(file.type)) return file
+
+    const bitmap = await createImageBitmap(file)
+    const maxDim = 1600
+    const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height))
+    const canvas = document.createElement('canvas')
+    canvas.width = Math.round(bitmap.width * scale)
+    canvas.height = Math.round(bitmap.height * scale)
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return file
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, 'image/jpeg', 0.8)
+    )
+    if (!blob) return file
+
+    const newName = file.name.replace(/\.\w+$/, '') + '.jpg'
+    return new File([blob], newName, { type: 'image/jpeg' })
+  }
+
   async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files
     if (!files || files.length === 0) return
@@ -36,17 +59,25 @@ export default function ListingForm({ existing }: { existing?: Listing }) {
     }
 
     const uploaded: string[] = []
-    for (const file of Array.from(files)) {
+    const failures: string[] = []
+    for (const rawFile of Array.from(files)) {
+      const file = await compressImage(rawFile)
       const path = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`
       const { error: uploadError } = await supabase.storage.from('listing-photos').upload(path, file)
       if (uploadError) {
-        setError(uploadError.message)
+        failures.push(uploadError.message)
         continue
       }
       const { data } = supabase.storage.from('listing-photos').getPublicUrl(path)
       uploaded.push(data.publicUrl)
     }
     setPhotos((prev) => [...prev, ...uploaded])
+    if (failures.length > 0) {
+      setError(
+        `${failures.length} photo(s) failed to upload: ${failures[0]}. ` +
+        `If this mentions a policy or permission, the listing-photos storage bucket needs an upload policy for authenticated users — see README.`
+      )
+    }
     setUploading(false)
   }
 
