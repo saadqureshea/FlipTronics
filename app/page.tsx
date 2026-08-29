@@ -1,9 +1,11 @@
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
-import { Listing } from '@/lib/types'
 import { mockListings } from '@/lib/mock-listings'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import ListingCard from '@/components/ListingCard'
+import ListingFilters from '@/components/ListingFilters'
+import ListingsGrid from '@/components/ListingsGrid'
+import ListingsSkeleton from '@/components/ListingsSkeleton'
 import { whatsappLink } from '@/lib/whatsapp'
 import Link from 'next/link'
 import Logo from '@/components/Logo'
@@ -16,25 +18,23 @@ const categories = [
   { label: 'SSD', value: 'ssd' },
 ]
 
+async function getLiveCount() {
+  const supabase = await createClient()
+  if (!supabase) return mockListings.length
+  const { count } = await supabase
+    .from('listings')
+    .select('id', { count: 'exact', head: true })
+    .neq('status', 'sold')
+  return count ?? 0
+}
+
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string }>
+  searchParams: Promise<{ category?: string; sort?: string; q?: string }>
 }) {
-  const { category } = await searchParams
-  const supabase = await createClient()
-
-  let items: Listing[]
-
-  if (supabase) {
-    let query = supabase.from('listings').select('*').neq('status', 'sold').order('created_at', { ascending: false })
-    if (category) query = query.eq('category', category)
-    const { data } = await query
-    items = (data ?? []) as Listing[]
-  } else {
-    // Supabase not connected yet — show real listing data baked into the site so it's never blank
-    items = category ? mockListings.filter((l) => l.category === category) : mockListings
-  }
+  const { category, sort, q } = await searchParams
+  const liveCount = await getLiveCount()
 
   return (
     <>
@@ -67,7 +67,7 @@ export default async function Home({
           </div>
           <div className="flex gap-7 mt-10">
             <div>
-              <div className="font-mono text-xl font-semibold">{items.length.toString().padStart(2, '0')}</div>
+              <div className="font-mono text-xl font-semibold">{liveCount.toString().padStart(2, '0')}</div>
               <div className="text-xs text-[var(--ash-dim)] mt-1">Live listings</div>
             </div>
             <div>
@@ -95,13 +95,10 @@ export default async function Home({
 
       <section id="listings" className="max-w-[1200px] mx-auto px-7">
         <div className="flex justify-between items-end mb-6">
-          <div>
-            <h2 className="font-display text-2xl font-semibold">Current drop</h2>
-            <div className="font-mono text-xs text-[var(--ash-dim)] mt-1.5">{'// '}{items.length} pieces listed</div>
-          </div>
+          <h2 className="font-display text-2xl font-semibold">Current drop</h2>
         </div>
 
-        <div className="flex gap-2.5 flex-wrap mb-9">
+        <div className="flex gap-2.5 flex-wrap mb-6">
           {categories.map((c) => (
             <Link
               key={c.value}
@@ -117,18 +114,13 @@ export default async function Home({
           ))}
         </div>
 
-        {items.length === 0 ? (
-          <div className="border border-dashed border-[var(--line)] py-20 text-center mb-20">
-            <p className="font-display text-lg mb-2">No listings here yet.</p>
-            <p className="text-[var(--ash-dim)] text-sm">Add your first one from the admin panel.</p>
-          </div>
-        ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-20">
-            {items.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
-            ))}
-          </div>
-        )}
+        <Suspense fallback={null}>
+          <ListingFilters />
+        </Suspense>
+
+        <Suspense key={`${category ?? ''}-${sort ?? ''}-${q ?? ''}`} fallback={<ListingsSkeleton />}>
+          <ListingsGrid category={category} sort={sort} q={q} />
+        </Suspense>
       </section>
 
       <Footer />
