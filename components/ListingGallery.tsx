@@ -35,7 +35,19 @@ export default function ListingGallery({ photos, title }: { photos: string[]; ti
         onTouchEnd={handleTouchEnd}
       >
         {hasPhotos ? (
-          <Image src={photos[index]} alt={title} fill className="object-cover" priority={index === 0} />
+          photos.map((photo, i) => (
+            <Image
+              key={photo}
+              src={photo}
+              alt={title}
+              fill
+              aria-hidden={i !== index}
+              className={`object-cover transition-opacity duration-300 ease-out ${
+                i === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
+              }`}
+              priority={i === 0}
+            />
+          ))
         ) : (
           <div className="w-full h-full flex items-center justify-center font-display text-[var(--ash-dim)]">
             No photo yet

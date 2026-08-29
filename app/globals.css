@@ -46,3 +46,40 @@ body {
 .facet-hero {
   clip-path: polygon(0 0, calc(100% - 50px) 0, 100% 50px, 100% 100%, 50px 100%, 0 calc(100% - 50px));
 }
+
+/* Signal dot — pulses to read as "live" rather than static */
+@keyframes pulse-signal {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.25); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .signal-dot { animation: pulse-signal 2s ease-in-out infinite; }
+}
+
+/* Hero glow — slow breathing behind the logo panel */
+@keyframes breathe-glow {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-glow { animation: breathe-glow 6s ease-in-out infinite; }
+}
+
+/* Listing cards — reveal as they scroll into view. Purely decorative,
+   so browsers without scroll-driven animation support (Firefox) just
+   render the cards in their final state with no fallback needed. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @keyframes card-reveal {
+      from { opacity: 0; transform: translateY(28px); }
+    }
+
+    .reveal-grid > * {
+      animation: card-reveal 0.5s ease-out backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+  }
+}

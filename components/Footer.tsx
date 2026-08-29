@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { whatsappLink } from '@/lib/whatsapp'
 
 export default function Footer() {
   return (
@@ -25,6 +26,18 @@ export default function Footer() {
               <Link href="/?category=laptop" className="block text-[13.5px] text-[var(--ash)] hover:text-white mb-2.5">Laptops</Link>
               <Link href="/?category=console" className="block text-[13.5px] text-[var(--ash)] hover:text-white mb-2.5">Consoles</Link>
               <Link href="/?category=ram" className="block text-[13.5px] text-[var(--ash)] hover:text-white mb-2.5">RAM &amp; SSD</Link>
+            </div>
+            <div>
+              <h5 className="font-mono text-[11px] text-[var(--ash-dim)] uppercase tracking-wide mb-3.5">Contact</h5>
+              <a
+                href={whatsappLink("Hi FlipTronics, I'd like to know more about your current listings")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-[13.5px] text-[var(--ash)] hover:text-white mb-2.5"
+              >
+                <span className="text-[var(--signal)]">●</span> +92 327 9754940
+              </a>
+              <span className="block text-[13.5px] text-[var(--ash-dim)]">WhatsApp only · Islamabad/Rwp</span>
             </div>
           </div>
         </div>

@@ -43,7 +43,7 @@ export default async function Home({
       <section className="max-w-[1200px] mx-auto px-7 pt-16 pb-14 grid md:grid-cols-[1.15fr_0.85fr] gap-12 items-center">
         <div>
           <div className="inline-flex items-center gap-2 font-mono text-xs tracking-wider text-[var(--magenta)] uppercase border border-[var(--line)] px-3 py-1.5 mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--signal)] shadow-[0_0_8px_var(--signal)]" />
+            <span className="signal-dot w-1.5 h-1.5 rounded-full bg-[var(--signal)] shadow-[0_0_8px_var(--signal)]" />
             Live drop · Limited pieces
           </div>
           <h1 className="font-display font-bold text-4xl md:text-[52px] leading-[1.05] tracking-tight mb-6">
@@ -83,7 +83,7 @@ export default async function Home({
 
         <div className="relative aspect-[1/1.05] bg-[var(--panel)] border border-[var(--line)] facet-hero flex items-center justify-center overflow-hidden">
           <div
-            className="absolute inset-0"
+            className="hero-glow absolute inset-0"
             style={{
               background:
                 'radial-gradient(circle at 30% 20%, rgba(109,31,201,0.35), transparent 55%), radial-gradient(circle at 75% 80%, rgba(240,20,176,0.3), transparent 55%)',

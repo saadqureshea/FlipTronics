@@ -19,11 +19,16 @@ export default function ListingCard({ listing }: { listing: Listing }) {
   const photo = listing.photos?.[0]
 
   return (
-    <div className="facet-card bg-[var(--panel)] border border-[var(--line)] overflow-hidden transition-transform hover:-translate-y-1 hover:border-[var(--magenta)]">
+    <div className="group facet-card bg-[var(--panel)] border border-[var(--line)] overflow-hidden transition-transform hover:-translate-y-1 hover:border-[var(--magenta)]">
       <Link href={`/listing/${listing.id}`}>
-        <div className="relative aspect-[4/3] bg-[var(--panel-2)] flex items-center justify-center">
+        <div className="relative aspect-[4/3] bg-[var(--panel-2)] flex items-center justify-center overflow-hidden">
           {photo ? (
-            <Image src={photo} alt={listing.title} fill className="object-cover" />
+            <Image
+              src={photo}
+              alt={listing.title}
+              fill
+              className="object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-105"
+            />
           ) : (
             <span className="font-display text-[var(--ash-dim)] text-sm">No photo yet</span>
           )}

@@ -72,7 +72,7 @@ export default async function ListingsGrid({
           </p>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
+        <div className="reveal-grid grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
           {active.map((listing) => (
             <ListingCard key={listing.id} listing={listing} />
           ))}
@@ -85,7 +85,7 @@ export default async function ListingsGrid({
             <h3 className="font-display text-lg font-semibold text-[var(--ash)]">Recently sold</h3>
             <div className="h-px flex-1 bg-[var(--line)]" />
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 opacity-55">
+          <div className="reveal-grid grid sm:grid-cols-2 lg:grid-cols-3 gap-5 opacity-55">
             {sold.map((listing) => (
               <ListingCard key={listing.id} listing={listing} />
             ))}
