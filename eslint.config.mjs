@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored third-party components (shadcn/ui + bklit charts registries).
+    // Not our code to fix — lint our own components instead.
+    "components/ui/**",
+    "components/charts/**",
+    "components/shimmering-text.tsx",
   ]),
 ]);
 

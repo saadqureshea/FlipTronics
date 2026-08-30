@@ -41,6 +41,12 @@ export default async function AdminDashboard() {
         </div>
         <div className="flex gap-3">
           <Link
+            href="/admin/analytics"
+            className="border border-[var(--line)] font-display font-semibold text-sm px-5 py-3 text-center flex-1 sm:flex-none hover:border-[var(--magenta)] transition-colors"
+          >
+            Analytics
+          </Link>
+          <Link
             href="/admin/listings/new"
             className="gradient-bg text-white font-display font-semibold text-sm px-5 py-3 facet-btn text-center flex-1 sm:flex-none"
           >
