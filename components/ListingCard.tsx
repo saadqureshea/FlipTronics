@@ -3,10 +3,12 @@ import Image from 'next/image'
 import { Listing } from '@/lib/types'
 import { listingWhatsappLink } from '@/lib/whatsapp'
 
+// Badges sit on top of photos, so they need a solid dark backdrop —
+// a tinted translucent fill leaves the text unreadable over bright images.
 const statusStyles: Record<string, string> = {
-  available: 'text-[var(--signal)] border-[var(--signal)]/35 bg-[var(--signal)]/10',
-  limited: 'text-[var(--warn)] border-[var(--warn)]/40 bg-[var(--warn)]/15',
-  sold: 'text-[var(--ash-dim)] border-[var(--ash-dim)]/30 bg-white/5',
+  available: 'text-[var(--signal)] border-[var(--signal)]/60 bg-black/75',
+  limited: 'text-[var(--warn)] border-[var(--warn)]/60 bg-black/75',
+  sold: 'text-white border-white/40 bg-black/80',
 }
 
 const statusLabel: Record<string, string> = {
@@ -33,12 +35,12 @@ export default function ListingCard({ listing }: { listing: Listing }) {
             <span className="font-display text-[var(--ash-dim)] text-sm">No photo yet</span>
           )}
           <span
-            className={`absolute top-3 left-3 font-mono text-[10.5px] uppercase tracking-wide px-2.5 py-1 border ${statusStyles[listing.status]}`}
+            className={`absolute top-3 left-3 z-10 font-mono text-[10.5px] uppercase tracking-wide px-2.5 py-1 border backdrop-blur-sm ${statusStyles[listing.status]}`}
           >
             {listing.status === 'limited' ? 'Limited stock' : statusLabel[listing.status]}
           </span>
           {listing.location && (
-            <span className="absolute bottom-3 left-3 font-mono text-[10.5px] text-white bg-black/55 px-2.5 py-1">
+            <span className="absolute bottom-3 left-3 z-10 font-mono text-[10.5px] text-white bg-black/70 backdrop-blur-sm px-2.5 py-1">
               📍 {listing.location}
             </span>
           )}
