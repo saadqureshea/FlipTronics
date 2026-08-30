@@ -41,11 +41,11 @@ export default async function ListingPage({
         </Link>
       </section>
       <section className="max-w-[1100px] mx-auto px-7 pt-6 pb-14 grid md:grid-cols-2 gap-12">
-        <div>
+        <div className="enter-panel" style={{ '--enter-delay': '60ms' } as React.CSSProperties}>
           <ListingGallery photos={item.photos ?? []} title={item.title} />
         </div>
 
-        <div>
+        <div className="enter" style={{ '--enter-delay': '160ms' } as React.CSSProperties}>
           <div className="font-mono text-xs text-[var(--ash-dim)] uppercase mb-2">
             {item.category} {item.brand ? `· ${item.brand}` : ''}
           </div>

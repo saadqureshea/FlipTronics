@@ -104,6 +104,79 @@ body {
   clip-path: polygon(0 0, calc(100% - 50px) 0, 100% 50px, 100% 100%, 50px 100%, 0 calc(100% - 50px));
 }
 
+/* ---------------------------------------------------------------------------
+   Page-load entrance
+   Elements carry `.enter` and set `--enter-delay` to stagger the sequence.
+   Scoped inside prefers-reduced-motion so that when motion is off, nothing
+   animates and everything renders in its normal final state (never hidden).
+   These are CSS keyframes rather than JS so they paint on first frame instead
+   of waiting for hydration.
+--------------------------------------------------------------------------- */
+@keyframes enter-up {
+  from { opacity: 0; transform: translateY(14px); }
+}
+
+@keyframes enter-fade {
+  from { opacity: 0; }
+}
+
+@keyframes enter-panel {
+  from { opacity: 0; transform: translateY(18px) scale(0.97); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .enter {
+    animation: enter-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation-delay: var(--enter-delay, 0ms);
+  }
+
+  .enter-fade {
+    animation: enter-fade 0.7s ease-out backwards;
+    animation-delay: var(--enter-delay, 0ms);
+  }
+
+  .enter-panel {
+    animation: enter-panel 0.75s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation-delay: var(--enter-delay, 0ms);
+  }
+}
+
+/* Nav links — underline wipes in from the left on hover */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 1px;
+  background: var(--magenta);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Buttons — clip-path crops box-shadow, so lift with brightness instead */
+.facet-btn {
+  transition: filter 0.2s ease, transform 0.12s ease;
+}
+
+.facet-btn:hover {
+  filter: brightness(1.12);
+}
+
+.facet-btn:active {
+  transform: translateY(1px);
+}
+
 /* Signal dot — pulses to read as "live" rather than static */
 @keyframes pulse-signal {
   0%, 100% { opacity: 1; transform: scale(1); }
