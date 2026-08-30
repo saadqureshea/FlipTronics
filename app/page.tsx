@@ -1,6 +1,8 @@
 import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
+import { Listing } from '@/lib/types'
 import { mockListings } from '@/lib/mock-listings'
+import FeaturedPanel, { FeaturedItem } from '@/components/FeaturedPanel'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ListingFilters from '@/components/ListingFilters'
@@ -8,7 +10,6 @@ import ListingsGrid from '@/components/ListingsGrid'
 import ListingsSkeleton from '@/components/ListingsSkeleton'
 import { whatsappLink } from '@/lib/whatsapp'
 import Link from 'next/link'
-import Logo from '@/components/Logo'
 
 const categories = [
   { label: 'All', value: '' },
@@ -28,13 +29,59 @@ async function getLiveCount() {
   return count ?? 0
 }
 
+function toFeatured(l: Listing): FeaturedItem {
+  return {
+    id: l.id,
+    title: l.title,
+    price: l.price,
+    currency: l.currency,
+    category: l.category,
+    brand: l.brand,
+    condition: l.condition,
+    status: l.status,
+    photo: l.photos?.[0] ?? null,
+  }
+}
+
+/**
+ * Hero panel content: whatever is flagged `featured`, falling back to the
+ * newest live listing so the panel always shows real stock. Returns an empty
+ * array only when there's nothing listed at all, which drops back to the logo.
+ */
+async function getFeatured(): Promise<FeaturedItem[]> {
+  const supabase = await createClient()
+
+  if (!supabase) {
+    const flagged = mockListings.filter((l) => l.featured)
+    return (flagged.length ? flagged : mockListings.slice(0, 1)).map(toFeatured)
+  }
+
+  const { data: flagged } = await supabase
+    .from('listings')
+    .select('*')
+    .eq('featured', true)
+    .neq('status', 'sold')
+    .order('created_at', { ascending: false })
+
+  if (flagged?.length) return (flagged as Listing[]).map(toFeatured)
+
+  const { data: newest } = await supabase
+    .from('listings')
+    .select('*')
+    .neq('status', 'sold')
+    .order('created_at', { ascending: false })
+    .limit(1)
+
+  return ((newest ?? []) as Listing[]).map(toFeatured)
+}
+
 export default async function Home({
   searchParams,
 }: {
   searchParams: Promise<{ category?: string; sort?: string; q?: string }>
 }) {
   const { category, sort, q } = await searchParams
-  const liveCount = await getLiveCount()
+  const [liveCount, featured] = await Promise.all([getLiveCount(), getFeatured()])
 
   return (
     <>
@@ -107,7 +154,7 @@ export default async function Home({
                 'radial-gradient(circle at 30% 20%, rgba(109,31,201,0.35), transparent 55%), radial-gradient(circle at 75% 80%, rgba(240,20,176,0.3), transparent 55%)',
             }}
           />
-          <Logo className="w-[46%] h-[46%] relative drop-shadow-[0_0_60px_rgba(240,20,176,0.35)]" />
+          <FeaturedPanel items={featured} />
         </div>
       </section>
 

@@ -14,6 +14,7 @@ export default function ListingForm({ existing }: { existing?: Listing }) {
   const [price, setPrice] = useState(existing?.price?.toString() ?? '')
   const [currency, setCurrency] = useState(existing?.currency ?? 'PKR')
   const [priceFirm, setPriceFirm] = useState(existing?.price_firm ?? false)
+  const [featured, setFeatured] = useState(existing?.featured ?? false)
   const [condition, setCondition] = useState(existing?.condition ?? 'Excellent')
   const [location, setLocation] = useState(existing?.location ?? 'Islamabad/Rawalpindi')
   const [status, setStatus] = useState<ListingStatus>(existing?.status ?? 'available')
@@ -104,6 +105,7 @@ export default function ListingForm({ existing }: { existing?: Listing }) {
       price: parseFloat(price),
       currency,
       price_firm: priceFirm,
+      featured,
       condition,
       location,
       status,
@@ -163,10 +165,14 @@ export default function ListingForm({ existing }: { existing?: Listing }) {
           <input value={currency} onChange={(e) => setCurrency(e.target.value)}
             className="w-full bg-[var(--panel)] border border-[var(--line)] px-4 py-3 text-sm focus:outline-none focus:border-[var(--magenta)]" />
         </div>
-        <div className="flex items-end pb-3.5">
+        <div className="flex items-end pb-3.5 gap-5">
           <label className="flex items-center gap-2 text-sm font-mono">
             <input type="checkbox" checked={priceFirm} onChange={(e) => setPriceFirm(e.target.checked)} />
             Firm price
+          </label>
+          <label className="flex items-center gap-2 text-sm font-mono" title="Show this listing in the homepage hero panel">
+            <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} />
+            Featured
           </label>
         </div>
       </div>
