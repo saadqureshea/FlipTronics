@@ -31,7 +31,14 @@ const statusLabel: Record<string, string> = {
   sold: 'Sold',
 }
 
-export default function FeaturedPanel({ items }: { items: FeaturedItem[] }) {
+export default function FeaturedPanel({
+  items,
+  label = 'Featured',
+}: {
+  items: FeaturedItem[]
+  /** "Featured" when items are genuinely flagged; "Latest drop" for the fallback. */
+  label?: string
+}) {
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
 
@@ -102,7 +109,7 @@ export default function FeaturedPanel({ items }: { items: FeaturedItem[] }) {
       >
         <div key={current.id} className="enter" style={{ '--enter-delay': '0ms' } as React.CSSProperties}>
           <div className="font-mono text-[11px] text-[var(--ash)] uppercase mb-1.5">
-            Featured · {current.category}
+            {label} · {current.category}
             {current.brand ? ` · ${current.brand}` : ''}
           </div>
           <h2 className="font-display text-xl sm:text-2xl font-bold leading-tight mb-2 text-white">

@@ -48,12 +48,14 @@ function toFeatured(l: Listing): FeaturedItem {
  * newest live listing so the panel always shows real stock. Returns an empty
  * array only when there's nothing listed at all, which drops back to the logo.
  */
-async function getFeatured(): Promise<FeaturedItem[]> {
+async function getFeatured(): Promise<{ items: FeaturedItem[]; label: string }> {
   const supabase = await createClient()
 
   if (!supabase) {
     const flagged = mockListings.filter((l) => l.featured)
-    return (flagged.length ? flagged : mockListings.slice(0, 1)).map(toFeatured)
+    return flagged.length
+      ? { items: flagged.map(toFeatured), label: 'Featured' }
+      : { items: mockListings.slice(0, 1).map(toFeatured), label: 'Latest drop' }
   }
 
   const { data: flagged } = await supabase
@@ -63,7 +65,9 @@ async function getFeatured(): Promise<FeaturedItem[]> {
     .neq('status', 'sold')
     .order('created_at', { ascending: false })
 
-  if (flagged?.length) return (flagged as Listing[]).map(toFeatured)
+  if (flagged?.length) {
+    return { items: (flagged as Listing[]).map(toFeatured), label: 'Featured' }
+  }
 
   const { data: newest } = await supabase
     .from('listings')
@@ -72,7 +76,7 @@ async function getFeatured(): Promise<FeaturedItem[]> {
     .order('created_at', { ascending: false })
     .limit(1)
 
-  return ((newest ?? []) as Listing[]).map(toFeatured)
+  return { items: ((newest ?? []) as Listing[]).map(toFeatured), label: 'Latest drop' }
 }
 
 export default async function Home({
@@ -154,7 +158,7 @@ export default async function Home({
                 'radial-gradient(circle at 30% 20%, rgba(109,31,201,0.35), transparent 55%), radial-gradient(circle at 75% 80%, rgba(240,20,176,0.3), transparent 55%)',
             }}
           />
-          <FeaturedPanel items={featured} />
+          <FeaturedPanel items={featured.items} label={featured.label} />
         </div>
       </section>
 
