@@ -76,9 +76,15 @@ export default async function AnalyticsPage() {
         </div>
         <Link
           href="/admin"
-          className="font-mono text-xs text-[var(--ash-dim)] hover:text-[var(--magenta)] transition-colors"
+          className="group inline-flex items-center gap-2 border border-[var(--line)] bg-[var(--panel)] px-4 py-3 font-mono text-xs uppercase tracking-wide text-[var(--ash)] transition-colors hover:border-[var(--magenta)] hover:text-white focus-visible:border-[var(--magenta)] focus-visible:text-white"
         >
-          ← Back to listings
+          <span
+            aria-hidden="true"
+            className="transition-transform duration-200 motion-safe:group-hover:-translate-x-1"
+          >
+            ←
+          </span>
+          Back to listings
         </Link>
       </div>
 
